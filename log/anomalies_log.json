@@ -1,0 +1,37 @@
+[
+  {
+    "supplier": "19010007",
+    "product": "PC0067",
+    "file": "PC0067.txt",
+    "error_type": "INCOMPLETE_TEXT",
+    "timestamp": "2026-08-25T14:09:21Z"
+  },
+  {
+    "supplier": "19010007",
+    "product": "PC0067",
+    "file": "PC0067.txt",
+    "error_type": "INCOMPLETE_TEXT",
+    "timestamp": "2026-08-25T14:11:19Z"
+  },
+  {
+    "supplier": "19010007",
+    "product": "PC0067",
+    "file": "PC0067.txt",
+    "error_type": "INCOMPLETE_TEXT",
+    "timestamp": "2026-08-25T14:16:20Z"
+  },
+  {
+    "supplier": "19010007",
+    "product": "PC0067",
+    "file": "PC0067.txt",
+    "error_type": "INCOMPLETE_TEXT",
+    "timestamp": "2026-08-25T20:46:23Z"
+  },
+  {
+    "supplier": "19010007",
+    "product": "PC0067",
+    "file": "PC0067.txt",
+    "error_type": "INCOMPLETE_TEXT",
+    "timestamp": "2026-08-25T20:52:14Z"
+  }
+]

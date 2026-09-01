@@ -23,8 +23,7 @@ MODELLO_GEMINI = "models/gemini-3.5-flash-lite"
 
 # Quanti prodotti recupera il RAG ad ogni domanda (meno prodotti = meno token
 # di contesto reinviati ad ogni turno, a scapito di qualche match secondario)
-N_RISULTATI_RAG = 6
-
+N_RISULTATI_RAG = 15
 # Quanti scambi (utente + risposta di Nino) tenere in memoria e reinviare ad
 # ogni turno. Oltre questo numero, gli scambi più vecchi vengono scartati per
 # non far crescere indefinitamente il costo in token di ogni richiesta.
@@ -123,22 +122,26 @@ RICHIESTA DEL CLIENTE:
 {user_query}
 """
 
-        # Tronchiamo lo storico PRIMA di aggiungere il turno corrente, così
-        # manteniamo al massimo MAX_SCAMBI_STORICO scambi precedenti
-        max_messaggi = MAX_SCAMBI_STORICO * 2  # ogni scambio = 1 user + 1 model
+        # Tronchiamo lo storico PRIMA di creare la sessione
+        max_messaggi = MAX_SCAMBI_STORICO * 2  
         if len(storico) > max_messaggi:
             storico[:] = storico[-max_messaggi:]
 
-        storico.append(types.Content(role="user", parts=[types.Part(text=prompt_finale)]))
+        # Inizializziamo una sessione chat con lo storico pulito
+        chat_session = client_genai.chats.create(
+            model=MODELLO_GEMINI,
+            config=config_generazione,
+            history=storico
+        )
 
         try:
-            response = client_genai.models.generate_content(
-                model=MODELLO_GEMINI,
-                contents=storico,
-                config=config_generazione,
-            )
+            # Usiamo send_message per evitare il warning di Google
+            response = chat_session.send_message(prompt_finale)
             print(f"\nNino: {response.text}")
-            storico.append(types.Content(role="model", parts=[types.Part(text=response.text)]))
+            
+            # Salviamo lo scambio nel nostro storico manuale per il prossimo turno
+            storico.append(types.Content(role="user", parts=[types.Part.from_text(text=prompt_finale)]))
+            storico.append(types.Content(role="model", parts=[types.Part.from_text(text=response.text)]))
         except Exception as e:
             print(f"\n[ERRORE]: {e}")
             # non salviamo il turno fallito nello storico
